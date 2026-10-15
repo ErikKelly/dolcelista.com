@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Join a list · Dolce Lista</title>
+  <meta name="description" content="You've been invited to a list on Dolce Lista.">
+  <meta name="robots" content="noindex">
+  <link rel="icon" href="/icon.png">
+  <link rel="stylesheet" href="/style.css">
+  <style>
+    .code { font-size: 40px; font-weight: 800; letter-spacing: 4px; text-align: center; margin: 4px 0 0; font-variant-numeric: tabular-nums; }
+    .actions { display: flex; flex-direction: column; gap: 10px; margin: 20px 0 8px; }
+    .btn { display: block; text-align: center; font: inherit; font-weight: 700; padding: 14px 18px; border-radius: 14px; text-decoration: none; cursor: pointer; }
+    .primary { background: var(--accent); color: #fff; border: 0; }
+    .outline { background: transparent; color: var(--accent); border: 1.5px solid var(--line); }
+    .center { text-align: center; }
+  </style>
+</head>
+<body>
+<main>
+  <header><img src="/icon.png" alt=""><a href="/">Dolce Lista</a></header>
+
+  <h1>You're invited to a list</h1>
+
+  <div id="has-code" hidden>
+    <p class="lede">Open it in Dolce Lista to see the list and join.</p>
+    <div class="card">
+      <p class="muted center">Your code</p>
+      <p class="code" id="code"></p>
+    </div>
+    <div class="actions">
+      <a class="btn primary" id="open">Open in Dolce Lista</a>
+      <button class="btn outline" id="copy" type="button">Copy code</button>
+    </div>
+    <p class="muted">If the button doesn't open the app, copy the code, open Dolce Lista, tap <i>Join</i> on the
+    Lists screen and paste it. Codes work for 7 days.</p>
+  </div>
+
+  <div id="no-code" hidden>
+    <p class="lede">This link is missing its code. Ask the person who invited you to share it again, or open
+    Dolce Lista, tap <i>Join</i> on the Lists screen and enter the code they sent.</p>
+  </div>
+
+  <h2>Don't have the app yet?</h2>
+  <p>Dolce Lista is in testing on iPhone. Ask the person who invited you to add you as a tester; you'll get an
+  email from TestFlight with the download.</p>
+
+  <footer><a href="/">Home</a><a href="/support/">Support</a><a href="/privacy/">Privacy</a></footer>
+</main>
+<script>
+  // The code comes only from this link; the page looks nothing up.
+  var raw = (new URLSearchParams(location.search).get('code') || '').toUpperCase().replace(/[^A-Z0-9]/g, '');
+  if (raw.length === 8) {
+    var pretty = raw.slice(0, 4) + '-' + raw.slice(4);
+    document.getElementById('code').textContent = pretty;
+    document.getElementById('open').href = 'dolcelista://join?code=' + raw;
+    document.getElementById('has-code').hidden = false;
+    var copy = document.getElementById('copy');
+    copy.addEventListener('click', function () {
+      var done = function () { copy.textContent = 'Copied ✓'; setTimeout(function () { copy.textContent = 'Copy code'; }, 2000); };
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(pretty).then(done, function () { prompt('Copy this code:', pretty); });
+      } else {
+        prompt('Copy this code:', pretty);
+      }
+    });
+  } else {
+    document.getElementById('no-code').hidden = false;
+  }
+</script>
+</body>
+</html>
